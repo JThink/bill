@@ -1,0 +1,62 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
+
+group = 'jthink'
+applicationName = 'bill'
+version = '0.0.1'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+buildDir = 'target'
+
+repositories {
+  mavenLocal()
+  maven { url "http://192.168.88.8:8081/nexus/content/groups/public" }
+  maven { url "http://192.168.88.8:8081/nexus/content/repositories/releases" }
+  mavenCentral()
+}
+
+ext {
+}
+
+dependencies {
+  compile "org.springframework.boot:spring-boot-starter"
+
+  compile "com.google.guava:guava:16.0.1"
+
+  testCompile "org.springframework.boot:spring-boot-starter-test"
+}
+
+configurations {
+  compile.exclude group: "log4j", module: "log4j"
+  compile.exclude group: "org.slf4j", module: "slf4j-log4j12"
+}
+
+mainClassName = 'com.jthink.bill.launcher.Launcher'
+
+buildscript {
+  ext {
+    springBootVersion = '1.5.6.RELEASE'
+  }
+
+  repositories {
+    mavenLocal()
+    maven { url "http://192.168.88.8:8081/nexus/content/groups/public" }
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+  }
+}
+
+startScripts {
+  doLast {
+    unixScript.text = unixScript.text.replaceAll("lib/(.*)\n", "lib/\\*")
+  }
+}
